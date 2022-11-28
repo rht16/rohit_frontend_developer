@@ -9,8 +9,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 export default function Banner() {
   const [isNavVisible, setNavVisibility] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
-
-
   return (
     <header className="Header">
       <img src={Logo} className="Logo" alt="logo" />
