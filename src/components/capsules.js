@@ -16,8 +16,8 @@ import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import { LocalizationProvider } from "@mui/x-date-pickers-pro";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import SpaceCard from './SpaceCard'
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import SpaceCard from "./SpaceCard";
 export default function Capsules() {
   const [type, setType] = useState([]);
   const [status, setStatus] = useState([]);
@@ -37,13 +37,13 @@ export default function Capsules() {
     setSelectedType(event.target.value);
   };
   const handleChange = (event, value) => {
-    console.log('setting')
+    console.log("setting");
     setCurrentPage(value);
     setPage(value !== 1 ? (value - 1) * 9 : 3);
   };
 
   const filterCapsules = async () => {
-    console.log('runnig')
+    console.log("runnig");
     try {
       const payload = {
         selectedStatus,
@@ -52,15 +52,15 @@ export default function Capsules() {
         selectedDate,
       };
       const { data } = await SpaceXService.filterCapsules(payload);
-      setPagesCount(data.length / 9 === 0 ? data.length : Math.floor(data.length / 9)+1);
-      console.log(data);
+      setPagesCount(
+        data.length / 9 === 0 ? data.length : Math.floor(data.length / 9) + 1
+      );
+      setCapsules(data)
     } catch (error) {}
   };
 
   useEffect(() => {
-    (selectedStatus ||
-      selectedType ) &&
-      filterCapsules();
+    (selectedStatus || selectedType) && filterCapsules();
   }, [selectedStatus, selectedType]);
 
   const fetchCapsules = async () => {
@@ -68,13 +68,14 @@ export default function Capsules() {
       const { data } = await SpaceXService.getAllCapsules({ skip: page });
       console.log(data);
       setCapsules(data);
-    //   setPagesCount(data.length / 10 === 0 ? data.length : Math.floor(data.length / 10)+1);
+      //   setPagesCount(data.length / 10 === 0 ? data.length : Math.floor(data.length / 10)+1);
       let tempType = [];
       let tempStatus = [];
       data.map((e) => {
         tempType.push(e.type);
         tempStatus.push(e.status);
       });
+
       tempType = tempType.filter((v, i, a) => a.indexOf(v) === i);
       tempStatus = tempStatus.filter((v, i, a) => a.indexOf(v) === i);
       setType(tempType);
@@ -86,20 +87,19 @@ export default function Capsules() {
 
   const nextPagesCapsules = async () => {
     try {
-        const payload = {
-            selectedStatus,
-            selectedDate,
-            selectedType,
-            skip: page,
-        }
+      const payload = {
+        selectedStatus,
+        selectedDate,
+        selectedType,
+        skip: page,
+      };
 
       const { data } = await SpaceXService.getNextCapsules(payload);
-      
+
       console.log(data);
-      setCapsules(data)
-      
+      setCapsules(data);
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
   };
 
@@ -112,7 +112,7 @@ export default function Capsules() {
     setPagesCount(data.count);
   };
   useEffect(() => {
-   !pagesCount && fetchPagesCount();
+    !pagesCount && fetchPagesCount();
     fetchCapsules();
   }, []);
 
@@ -126,8 +126,13 @@ export default function Capsules() {
   );
   return (
     <>
-      <div className="capsulesSearch">
-        <FormControl sx={{ m: 1, minWidth: 80 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <FormControl sx={{ m: 1, width: "200px" }}>
           <InputLabel id="demo-simple-select-autowidth-label">
             Status
           </InputLabel>
@@ -144,7 +149,7 @@ export default function Capsules() {
             })}
           </Select>
         </FormControl>
-        <FormControl sx={{ m: 1, minWidth: 80 }}>
+        <FormControl sx={{ m: 1, width: "200px" }}>
           <InputLabel id="demo-simple-select-autowidth-label">Type</InputLabel>
           <Select
             labelId="demo-simple-select-autowidth-label"
@@ -160,29 +165,30 @@ export default function Capsules() {
           </Select>
         </FormControl>
         <LocalizationProvider dateAdapter={AdapterMoment}>
-        <DatePicker
-          disableFuture
-          label="By Date"
-          openTo="year"
-          views={['year', 'month', 'day']}
-          value={selectedDate}
-          onChange={(newValue) => {
-            setSelectedDate(newValue);
-          }}
-          onAccept={() => filterCapsules()}
-          renderInput={(params) => <TextField {...params} />}
-        />
-    </LocalizationProvider>
-      </div>
+          <DatePicker
+            sx={{ paddingTop: "20px" }}
+            disableFuture
+            label="By Date"
+            openTo="year"
+            views={["year", "month", "day"]}
+            value={selectedDate}
+            onChange={(newValue) => {
+              setSelectedDate(newValue);
+            }}
+            onAccept={() => filterCapsules()}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
+      </Box>
       {/* {capsules.map((e) => {
         return ( */}
-            <>
-            <Box sx={{paddingTop: '100px'}}>
-            <Grid>
+      <>
+        <Box sx={{ paddingTop: "100px", marginLeft: '75px' }}>
+          <Grid>
             <Grid container spacing={4}>
               {capsules.map((item) => (
-                <Grid xs={12} sm={6} md={4} >
-                  <SpaceCard item={item}/>
+                <Grid xs={12} sm={6} md={4}>
+                  <SpaceCard item={item} />
                 </Grid>
               ))}
               <Grid
@@ -195,15 +201,14 @@ export default function Capsules() {
               ></Grid>
             </Grid>
           </Grid>
-          </Box>
-          </>
-          
+        </Box>
+      </>
+
       <div
         style={{
           alignItems: "center",
           justifyItems: "center",
-          marginLeft: "45%",
-          position: "fixed",
+          marginLeft: "40%",
           bottom: "0",
         }}
       >
